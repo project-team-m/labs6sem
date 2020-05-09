@@ -1,0 +1,63 @@
+body {
+    background-color: #dcdcdc;
+    box-sizing: border-box;
+}
+
+.graphics{
+    position: absolute;
+    width: 400px;
+    top: 85px;
+    right: 20px;
+}
+
+.currency {
+    font-family: 'YS Text','Helvetica Neue',Arial,sans-serif;
+    text-align: center;
+    padding-bottom: 3px;
+    padding-top: 5px;
+}
+
+.graphics canvas {
+    border: black 1px solid;
+}
+
+header {
+    height: 80px;
+}
+
+.line {
+    height: 60px;
+    position: relative;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+.brand {
+    font-family: 'YS Text','Helvetica Neue',Arial,sans-serif;
+    font-size: 40px;
+    color: #cdcdcd;
+    margin-left: 100px;
+}
+
+.info_people {
+    position: absolute;
+    right: 100px;
+}
+
+.people_icon {
+    width: 60px;
+    height: 60px;
+}
+
+.client_name {
+    padding-left: 10px;
+    font-family: 'YS Text','Helvetica Neue',Arial,sans-serif;
+    font-size: 20px;
+    color: #cdcdcd;
+}
+
+.exit_button {
+    color: #5fbaff;
+    font-size: 13px;
+    padding: .375rem .100rem;
+}
