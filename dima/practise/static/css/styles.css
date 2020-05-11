@@ -4,10 +4,9 @@ body {
 }
 
 .graphics{
-    position: absolute;
     width: 400px;
-    top: 85px;
-    right: 20px;
+    float: right;
+    margin-right: 20px;
 }
 
 .currency {
@@ -60,4 +59,27 @@ header {
     color: #5fbaff;
     font-size: 13px;
     padding: .375rem .100rem;
+}
+
+.info_bank {
+    float: left;
+    font-family: 'YS Text','Helvetica Neue',Arial,sans-serif;
+    font-size: 18px;
+    color: #ffffff;
+    text-align: justify;
+    background-color: #555555;
+    width: 20%;
+    padding: 15px;
+    margin-left: 20px;
+}
+
+.lk_info {
+    display: inline-flex;
+    доделай меня, отцентровывание
+
+    width: 40%;
+}
+
+.main {
+    margin-top: 20px;
 }
