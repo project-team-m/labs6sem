@@ -1,0 +1,5 @@
+/home/dekeyel/Projects/labs6sem/dima/C#/lab4/lab4/obj/Debug/.NETFramework,Version=v4.6.1.AssemblyAttribute.cs
+/home/dekeyel/Projects/labs6sem/dima/C#/lab4/lab4/bin/Debug/lab4.exe.mdb
+/home/dekeyel/Projects/labs6sem/dima/C#/lab4/lab4/bin/Debug/lab4.exe
+/home/dekeyel/Projects/labs6sem/dima/C#/lab4/lab4/obj/Debug/lab4.exe
+/home/dekeyel/Projects/labs6sem/dima/C#/lab4/lab4/obj/Debug/lab4.exe.mdb
