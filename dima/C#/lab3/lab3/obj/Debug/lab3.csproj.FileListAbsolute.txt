@@ -1,0 +1,5 @@
+D:\Projects\labs6sem\dima\C#\lab3\lab3\bin\Debug\lab3.exe
+D:\Projects\labs6sem\dima\C#\lab3\lab3\bin\Debug\lab3.pdb
+D:\Projects\labs6sem\dima\C#\lab3\lab3\obj\Debug\lab3.csprojAssemblyReference.cache
+D:\Projects\labs6sem\dima\C#\lab3\lab3\obj\Debug\lab3.exe
+D:\Projects\labs6sem\dima\C#\lab3\lab3\obj\Debug\lab3.pdb
