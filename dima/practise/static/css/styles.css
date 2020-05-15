@@ -3,12 +3,6 @@ body {
     box-sizing: border-box;
 }
 
-.graphics{
-    width: 400px;
-    float: right;
-    margin-right: 20px;
-}
-
 .currency {
     font-family: 'YS Text','Helvetica Neue',Arial,sans-serif;
     text-align: center;
@@ -62,24 +56,31 @@ header {
 }
 
 .info_bank {
-    float: left;
     font-family: 'YS Text','Helvetica Neue',Arial,sans-serif;
     font-size: 18px;
     color: #ffffff;
     text-align: justify;
     background-color: #555555;
-    width: 20%;
     padding: 15px;
     margin-left: 20px;
+    width: 20%;
 }
 
 .lk_info {
-    display: inline-flex;
-    доделай меня, отцентровывание
+    width: 55%; /* Можно задать любую другую ширину блока */
+    background: grey;
+    margin: 0 10px;
+}
 
-    width: 40%;
+.graphics{
+    width: 400px;
+    margin-right: 20px;
 }
 
 .main {
     margin-top: 20px;
+    display: flex;
+    flex-flow: row nowrap;
+    align-content: center;
+    justify-content: space-between;
 }
