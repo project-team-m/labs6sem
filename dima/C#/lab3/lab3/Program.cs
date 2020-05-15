@@ -11,24 +11,6 @@ namespace lab3
 
     internal class Program
     {
-        static double sum = 0d;
-        
-        static void LeftTriangle(object n)
-        {
-            var left = 0;
-            var right = 2.5;
-            var nums = (int)n;
-            double h = (right - left) / nums;
-            sum = 0d;
-            for (var i = 0; i <= nums - 1; i++)
-            {
-                var x = left + i * h;
-                sum += f4(x);
-            }
-
-            sum = h * sum;
-        }
-        
         static double f1(double x)
         {
             return Math.Sin(x) * Math.Cos(x * x);
@@ -48,15 +30,51 @@ namespace lab3
         {
             return -1 * x * x  + 5;
         }
+        
+        static double sum = 0;
+        
+        static void LeftTriangle(object stat)
+        {
+            var args = (double[])stat;
+            var left = args[0];
+            var right = args[1];
+            var nums = args[2];
+            var tmpSum = 0d;
+            double h = (right - left) / nums;
+            for (var i = 0; i <= nums - 1; i++)
+            {
+                var x = left + i * h;
+                tmpSum += f4(x);
+            }
 
+            sum += h * tmpSum;
+        }
+
+        static double[] copy(double[] mass)
+        {
+            double[] new_mass = new double[mass.Length];
+            for (int i = 0; i < mass.Length; i++)
+            {
+                new_mass[i] = mass[i];
+            }
+
+            return new_mass;
+        }
+        
         static void Threads(int numThreads)
         {
+            double[] args = {0, 2.5, 100};
             ThreadPool.SetMaxThreads(numThreads, 0);
+            var step = (args[1] - args[0]) / numThreads;
+            args[1] = args[0] + step;
             for (int i = 0; i < numThreads; i++)
             {
-                ThreadPool.QueueUserWorkItem(LeftTriangle, 1000);
+                
+                ThreadPool.QueueUserWorkItem(LeftTriangle, copy(args));
+                args[0] = args[1];
+                args[1] += step;
             }
-            Thread.Sleep(300);
+            Thread.Sleep(1);
             Console.WriteLine(sum);
         }
         
