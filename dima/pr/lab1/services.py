@@ -1,4 +1,4 @@
-from ORM_Models import Client, Processor, Basket, Order
+from DAO_Models import Client, Processor, Basket, Order
 from config import DATABASE
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.engine.url import URL
@@ -24,14 +24,17 @@ from models import lacksError
 
 
 class ClientService:
-    @staticmethod
-    def show_processors():
-        return [processor for processor in session.query(Processor)]
+    engine = create_engine(URL(**DATABASE), echo=False)
+    session = sessionmaker(bind=engine)
+    session = session()
+
+    def show_processors(self):
+        return [processor for processor in self.session.query(Processor)]
 
     def get_proc_from_basket(self, id_client):
         return [[processor.id, processor.name, processor.price, basket.quantity] for processor,
                                                                                      basket in
-                session.query(Processor, Basket). \
+                self.session.query(Processor, Basket). \
                     filter(Basket.id_processor == Processor.id, Basket.id_client == id_client)]
 
     # Возвращает json всех объектов к орзине
@@ -46,61 +49,57 @@ class ClientService:
 }''' % (i[0], i[1], i[2], i[3]))
         return response
 
-    # Исключение
-    @staticmethod
-    def check_in_the_clients(id_client):
-        if not session.query(Client).filter(Client.id == id_client).first():
+    def check_in_the_clients(self, id_client):
+        if not self.session.query(Client).filter(Client.id == id_client).first():
             raise lacksError("Client does not exists")
 
-    # Исключение
-    @staticmethod
-    def check_in_the_processors(id_processor):
-        if not session.query(Processor).filter(Processor.id == id_processor).first():
+    def check_in_the_processors(self, id_processor):
+        if not self.session.query(Processor).filter(Processor.id == id_processor).first():
             raise lacksError("Processor does not exists")
 
     def add_to_basket(self, id_processor, id_client):
         self.check_in_the_processors(id_processor)
         self.check_in_the_clients(id_client)
-        proc_from_basket = session.query(Basket, Order).filter(Basket.id_order == Order.id,
+        proc_from_basket = self.session.query(Basket, Order).filter(Basket.id_order == Order.id,
                                                                Basket.id_client == id_client,
                                                                Basket.id_processor == id_processor,
                                                                Order.date_order == None).all()
         if proc_from_basket:
             proc_from_basket[0][0].quantity += 1
-            session.commit()
+            self.session.commit()
         else:
-            response = session.query(Basket, Order).filter(Basket.id_order == Order.id,
+            response = self.session.query(Basket, Order).filter(Basket.id_order == Order.id,
                                                            Basket.id_client == id_client,
                                                            Order.date_order == None).all()
             if response:
                 field = Basket(id_processor, 1, id_client, response[0][1].id)
-                session.add(field)
-                session.commit()
+                self.session.add(field)
+                self.session.commit()
             else:
                 order = Order()
-                session.add(order)
-                session.commit()
-                field = Basket(id_processor, 1, id_client, session.query(Order).all()[-1].id)
-                session.add(field)
-                session.commit()
+                self.session.add(order)
+                self.session.commit()
+                field = Basket(id_processor, 1, id_client, self.session.query(Order).all()[-1].id)
+                self.session.add(field)
+                self.session.commit()
 
     def remove_from_basket(self, id_processor, id_client):
         self.check_in_the_processors(id_processor)
         self.check_in_the_clients(id_client)
-        proc_from_basket = session.query(Basket, Order).filter(Basket.id_order == Order.id,
+        proc_from_basket = self.session.query(Basket, Order).filter(Basket.id_order == Order.id,
                                                                Basket.id_client == id_client,
                                                                Basket.id_processor == id_processor,
                                                                Order.date_order == None).all()
         if proc_from_basket:
             if proc_from_basket[0][0].quantity > 1:
                 proc_from_basket[0][0].quantity -= 1
-                session.commit()
+                self.session.commit()
             elif proc_from_basket[0][0].quantity == 1:
-                session.delete(proc_from_basket[0][0])
-                session.commit()
+                self.session.delete(proc_from_basket[0][0])
+                self.session.commit()
 
     def enough_balance(self, id_client):
-        response = session.query(Client, Basket, Order, Processor).filter(
+        response = self.session.query(Client, Basket, Order, Processor).filter(
             Client.id == Basket.id_client,
             Basket.id_order == Order.id,
             Basket.id_processor == Processor.id,
@@ -120,7 +119,7 @@ class ClientService:
             raise lacksError('Order is not exists')
 
     def check_enough_on_stocks(self, id_client):
-        response = session.query(Client, Basket, Order, Processor).filter(
+        response = self.session.query(Client, Basket, Order, Processor).filter(
             Client.id == Basket.id_client,
             Basket.id_order == Order.id,
             Basket.id_processor == Processor.id,
@@ -132,7 +131,7 @@ class ClientService:
                 raise lacksError('Insufficient processors in stocks')
 
     def end_order(self, id_client):
-        response = session.query(Client, Basket, Order, Processor).filter(
+        response = self.session.query(Client, Basket, Order, Processor).filter(
             Client.id == Basket.id_client,
             Basket.id_order == Order.id,
             Basket.id_processor == Processor.id,
@@ -140,15 +139,15 @@ class ClientService:
             Order.date_order == None
         ).first()
         response[2].date_order = datetime.now()
-        session.commit()
+        self.session.commit()
 
     def pay(self, id_client, price):
-        client = session.query(Client).filter(Client.id == id_client).first()
+        client = self.session.query(Client).filter(Client.id == id_client).first()
         client.balance -= price
-        session.commit()
+        self.session.commit()
 
     def write_off_processors(self, id_client):
-        response = session.query(Client, Basket, Order, Processor).filter(
+        response = self.session.query(Client, Basket, Order, Processor).filter(
             Client.id == Basket.id_client,
             Basket.id_order == Order.id,
             Basket.id_processor == Processor.id,
@@ -158,7 +157,7 @@ class ClientService:
         for i in response:
             i[3].balance -= i[1].quantity
 
-        session.commit()
+        self.session.commit()
 
     def buy(self, id_client):
         all_price = self.enough_balance(id_client)
@@ -169,8 +168,12 @@ class ClientService:
 
 
 class StorekeeperService:
+    engine = create_engine(URL(**DATABASE), echo=False)
+    session = sessionmaker(bind=engine)
+    session = session()
+
     def get_processor(self, id_processor):
-        proc = session.query(Processor).filter(Processor.id == id_processor).first()
+        proc = self.session.query(Processor).filter(Processor.id == id_processor).first()
         if not proc:
             raise lacksError("Processor does not exists")
         else:
@@ -179,12 +182,16 @@ class StorekeeperService:
     def change_balance(self, id_processor, new_balance):
         processor = self.get_processor(id_processor)
         processor.balance = new_balance
-        session.commit()
+        self.session.commit()
 
 
 class ManagerService:
+    engine = create_engine(URL(**DATABASE), echo=False)
+    session = sessionmaker(bind=engine)
+    session = session()
+
     def get_processor(self, id_processor):
-        proc = session.query(Processor).filter(Processor.id == id_processor).first()
+        proc = self.session.query(Processor).filter(Processor.id == id_processor).first()
         if not proc:
             raise lacksError("Processor does not exists")
         else:
@@ -192,26 +199,24 @@ class ManagerService:
 
     def insert_new_processor(self, **kwargs):
         a = Processor(**kwargs)
-        session.add(a)
-        session.commit()
+        self.session.add(a)
+        self.session.commit()
 
     def remove_processor(self, id_processor):
-        session.delete(self.get_processor(id_processor))
-        session.commit()
+        self.session.delete(self.get_processor(id_processor))
+        self.session.commit()
 
     def update_characteristics(self, id_processor, **kwargs):
         a = self.get_processor(id_processor)
         a.update_characteristics(**kwargs)
-        session.commit()
+        self.session.commit()
 
 
 if __name__ == '__main__':
-    engine = create_engine(URL(**DATABASE), echo=False)
-    Session = sessionmaker(bind=engine)
-    session = Session()
-    for i in ClientService().show_basket(1):
-        print(i)
-    #print(str(ClientService().show_basket(1)))
+    a = ClientService()
+    b = ManagerService()
+    print(a.show_processors())
+    print(b.get_processor(2))
 
     '''ManagerService().insert_new_processor(name = 'AMD Ryzen 9 3900X TRAY',
                                           price = 454,

@@ -4,8 +4,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.engine.url import URL
 from config import DATABASE
 
-
 Base = declarative_base()
+
 
 class Client(Base):
     __tablename__ = 'clients'
@@ -57,10 +57,8 @@ class Processor(Base):
     balance = Column(Integer, default=0)
 
     def __init__(self, **kwargs):
-        if 'name' in kwargs:
-            self.name = kwargs['name']
-        if 'price' in kwargs:
-            self.price = kwargs['price']
+        self.name = kwargs['name']
+        self.price = kwargs['price']
         if 'clock' in kwargs:
             self.clock = kwargs['clock']
         if 'cores' in kwargs:
@@ -144,6 +142,7 @@ def main():
     Session = sessionmaker(bind=engine)
     session = Session()
 
+
 if __name__ == '__main__':
-    #main()
-    pass
+    main()
+
