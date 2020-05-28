@@ -77,7 +77,7 @@ class ManagerProvider:
 
 if __name__ == '__main__':
     manager = providers.Singleton(ManagerProvider)
-    manager2 = providers.Singleton(ManagerProvider)
+    manager2 = providers.Singleton(ManagerProvider)()
     manager3 = providers.Singleton(ManagerProvider)
 
     manager3().get_count()

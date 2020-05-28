@@ -84,4 +84,4 @@ class ManagerClass:
 
 if __name__ == '__main__':
     a = ManagerClass()
-    a.get_processor(1)
+    a.get_processor(99)
