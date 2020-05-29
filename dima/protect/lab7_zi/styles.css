@@ -1,0 +1,76 @@
+body {
+    box-sizing: border-box;
+    background-color: #aaaaaa;
+}
+
+.container-main {
+    position: relative;
+    width: 900px;
+    margin: 0 auto;
+}
+
+.login{
+    padding-top: 200px;
+    width: 300px;
+}
+
+.login-btn-1 {
+    margin-top: 10px;
+    margin-left: 57px;
+    height: 40px;
+}
+
+.login-btn-2 {
+    margin-top: 10px;
+    margin-left: 20px;
+    height: 40px;
+}
+
+.login-input {
+    margin: 0 auto;
+    display: block;
+    width: 200px;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    transition: border-color .15s
+}
+
+#c1 {
+    position: absolute;
+    right: 100px;
+    top: 30px;
+    border: 3px solid black;
+    background:
+            linear-gradient(
+                    black, transparent 1px
+            ),
+            linear-gradient(
+                    90deg,
+                    black, transparent 1px
+            );
+    background-size: 40px 40px;
+    background-position: center center;
+}
+#times-left {
+    position: absolute;
+    top: 150px;
+    right: 30px;
+    font-size: 20px;
+    color: #ffffff;
+}
+
+.login-btn-3 {
+    position: absolute;
+    height: 40px;
+    top: 234px;
+    right: 20px;
+}
+
+.login-btn-4 {
+    position: absolute;
+    height: 40px;
+    top: 284px;
+    right: 10px;
+}
