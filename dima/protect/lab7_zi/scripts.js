@@ -1,8 +1,30 @@
 let times_left = document.getElementById('times-left');
 
 function left(tl) {
-    times_left.innerHTML = "Left " + (7 - tl).toString()
+    times_left.innerHTML = "Left " + (8 - tl).toString()
 }
+
+
+class User {
+    constructor() {
+        this.logins = ["Vanya", "Dima", "Sasha"]
+        this.passwords = [
+            [[1,1],[1,2],[1,3],[2,3],[3,3],[4,3],[5,3],[5,2],[5,1],[3,2],[3,1]],
+            [[1,1],[1,2],[1,3],[1,4],[1,5],[2,3],[3,1],[3,2],[3,3],[3,4],[3,5],[4,5],[5,5],[5,4],[5,3],[5,2],[5,1],[4,1]],
+            [[9,6],[8,6],[7,6],[7,7],[7,8],[8,8],[9,8],[9,9],[9,10],[8,10],[7,10]]
+        ]
+    }
+
+    get_user(login) {
+        for (let i = 0; i < this.logins.length; ++i) {
+            if (this.logins[i] === login) {
+                return this.passwords[i]
+            }
+        }
+    }
+
+}
+
 
 class View {
     constructor() {
@@ -14,6 +36,7 @@ class View {
         this.dots = [];
         this.old_pass = []
         this.count = 0
+        this.status = 0 // 1 registr | 2 login
     }
 
     clear_window() {
@@ -42,25 +65,35 @@ class View {
         }
     }
 
-    check_pass(old_p, new_p) {
-        if (old_p.length !== new_p.length) {
+    check_pass() {
+        if (this.old_pass.length !== this.dots.length) {
             return false;
         }
         let c = 0;
-        alert(1) // тут почему то всё зависает паскуда, мать в кино водил
-        for (let i = 0; i < old_p.length; i++) {
-            for (let j = 0; i < new_p.length; j++) {
-                if (new_p[j] === old_p[i]) {
+        for (let i = 0; i < this.old_pass.length; i++) {
+            for (let j = 0; j < this.dots.length; j++) {
+                if (this.dots[j][0] === this.old_pass[i][0] && this.dots[j][1] === this.old_pass[i][1]) {
                     c++;
                 }
             }
         }
-        return c === old_p.length;
+        return c === this.old_pass.length;
     }
 
     registration(login) {
         view.count = 0
+        view.status = 1
+        alert("Enter a password")
         left(view.count)
+    }
+
+    logging(login) {
+        let u = new User()
+        view.count = 1
+        view.status = 2
+        alert("Enter a password " + login)
+        left(view.count)
+        this.old_pass = u.get_user(login)
     }
 }
 
@@ -71,7 +104,7 @@ document.getElementById("clear").onclick = function clear() {
 };
 
 document.getElementById("singin").onclick = function singin() {
-    let a = 1;
+    view.logging(document.getElementById('login').value)
 };
 
 document.getElementById("singup").onclick = function singup() {
@@ -85,24 +118,40 @@ view.canvas.onmousemove = function drawIfPressed (e) {
 };
 
 document.getElementById("confirm").onclick = function confirm() {
-    left(view.count)
-    if (view.count === 0) {
-        view.old_pass = [];
-        for (let i = 0; i < view.dots.length; ++i) {
-            view.old_pass[view.old_pass.length] = [view.dots[i][0], view.dots[i][1]]
-        }
-        view.dots = []
-    } else {
-        if (view.check_pass(view.old_pass, view.dots) !== true) {
-            alert("Different password! Try again!")
-            view.count = 1
+    if (view.status === 1) {
+        if (view.count === 0) {
+            view.old_pass = [];
+            for (let i = 0; i < view.dots.length; ++i) {
+                view.old_pass[view.old_pass.length] = [view.dots[i][0], view.dots[i][1]]
+            }
+            view.dots = []
         } else {
-            if (view.count < 7) {
+            if (!view.check_pass(view.old_pass, view.dots)) {
+                alert("Different password! Try again!")
+                view.count = 0
             } else {
-                alert("Successful")
+                if (view.count < 7) {
+                } else {
+                    alert("Successful")
+                }
             }
         }
+        view.count++;
+        left(view.count)
+        view.clear_window()
+    } else {
+        if (view.count < 7) {
+            if (view.check_pass()) {
+                alert("Logged in")
+            } else {
+                alert("Uncorrected password")
+                view.count++
+            }
+        } else {
+            alert("Access denied")
+        }
+        view.dots = []
+        left(view.count)
+        view.clear_window()
     }
-    view.count++;
-    view.clear_window()
 };
