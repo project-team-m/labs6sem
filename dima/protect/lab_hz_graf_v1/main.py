@@ -113,7 +113,6 @@ class Graph:
             else:
                 s.append([i])
 
-        # костыль, передаётся чтобы вывести в таблице
         self.save_s = [[str(j) for j in i] for i in s]
 
         new_graph = [[[], []] for i in range(len(s))]
